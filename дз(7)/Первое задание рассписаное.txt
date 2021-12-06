@@ -1,0 +1,17 @@
+import statistics
+
+list = [2, 4, 1, 5, 10, 3, 0.5, 3, 2]
+
+print("Значения списка:", list)
+print("Cумма списка:", sum(list))
+print("Среднее арифметическое списка:", statistics.mean(list))
+
+a = list[0]
+b = list[0]
+for i in list:
+    if i < a:
+        a = i
+    elif i > b:
+        b = i
+print("Самое меньшее число списка: ", a)
+print("Самое большое число списка: ", b)
