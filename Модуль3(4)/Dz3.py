@@ -28,7 +28,8 @@ class Employee:
                 print("Год должен быть числом:\n")
         new_person = Employee(add_name, add_second_name, add_departament, add_year)
         list1.append(new_person)
-        print(f'{str(list1)}\n')
+        for i in list1:
+            print(i)
 
     @staticmethod
     def delete_person():

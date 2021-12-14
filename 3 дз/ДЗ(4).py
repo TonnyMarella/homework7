@@ -27,20 +27,41 @@ elif Operation == "**":
     y = int(input("В какую степень хотите вознести?\n"))
     print("Ваш результат:", x ** y)
 elif Operation == "+":
-    number1 = int(input("Введите первое число\n"))
-    number2 = int(input("Введите второе число\n"))
-    print("Ваш результат:", number1 + number2 )
+    while True:
+        try:
+            number1 = int(input("Введите первое число\n"))
+            number2 = int(input("Введите второе число\n"))
+            print("Ваш результат:", number1 + number2)
+            break
+        except:
+            print("Вы ввели не целое число")
 elif Operation == "-":
-    number1 = int(input("Введите первое число\n"))
-    number2 = int(input("Введите второе число\n"))
-    print("Ваш результат:", number1 - number2 )
+    while True:
+        try:
+            number1 = int(input("Введите первое число\n"))
+            number2 = int(input("Введите второе число\n"))
+            print("Ваш результат:", number1 - number2)
+            break
+        except:
+            print("Вы ввели не целое число")
 elif Operation == "*":
-    number1 = int(input("Введите первое число\n"))
-    number2 = int(input("Введите второе число\n"))
-    print("Ваш результат:", number1 * number2 )
+    while True:
+        try:
+            number1 = int(input("Введите первое число\n"))
+            number2 = int(input("Введите второе число\n"))
+            print("Ваш результат:", number1 * number2)
+            break
+        except:
+            print("Вы ввели не целое число")
 elif Operation == "/":
-    number1 = int(input("Введите первое число\n"))
-    number2 = int(input("Введите второе число\n"))
-    print("Ваш результат:", number1 / number2 )
+    while True:
+        try:
+            number1 = int(input("Введите первое число\n"))
+            number2 = int(input("Введите второе число\n"))
+            print("Ваш результат:", number1 / number2)
+            break
+        except:
+            print("Деление на 0 невозможно")
+            # raise ZeroDivisionError("Деление на 0 невозможно")
 else:
     print("Вы ввели некорректную операцию")
