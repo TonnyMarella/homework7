@@ -1,7 +1,15 @@
+"""
+Пример реализации списка с итератором
+Взяв за основу код примера example_5.py, расширьте функциональность класса MyList,
+добавив методы для очистки списка, добавления элемента в произвольное место списка,
+удаления элемента из конца и произвольного места списка.
+"""
+
+
 class MyList(object):
     """Класс списка"""
 
-    class _ListNode(object):
+    class _Node(object):
         """Внутренний класс элемента списка"""
 
         # По умолчанию атрибуты-данные хранятся в словаре __dict__.
@@ -18,14 +26,15 @@ class MyList(object):
             self.next = next
 
         def __repr__(self):
-            return 'MyList._ListNode({}, {}, {})'.format(self.value, id(self.prev), id(self.next))
+            return 'MyList._Node({}, {}, {})'.format(self.value, id(self.prev), id(self.next))
+
 
     class _Iterator(object):
         """Внутренний класс итератора"""
 
         def __init__(self, list_instance):
             self._list_instance = list_instance
-            self._next_node = list_instance._head
+            self._next_node = list_instance._start
 
         def __iter__(self):
             return self
@@ -43,9 +52,9 @@ class MyList(object):
         # Длина списка
         self._length = 0
         # Первый элемент списка
-        self._head = None
+        self._start = None
         # Последний элемент списка
-        self._tail = None
+        self._last = None
 
         # Добавление всех переданных элементов
         if iterable is not None:
@@ -56,18 +65,99 @@ class MyList(object):
         """Добавление элемента в конец списка"""
 
         # Создание элемента списка
-        node = MyList._ListNode(element)
+        node = MyList._Node(element)
 
-        if self._tail is None:
+        if self._last is None:
             # Список пока пустой
-            self._head = self._tail = node
+            self._start = self._last = node
         else:
             # Добавление элемента
-            self._tail.next = node
-            node.prev = self._tail
-            self._tail = node
+            self._last.next = node
+            node.prev = self._last
+            self._last = node
 
         self._length += 1
+
+    ## добавив методы для очистки списка, добавления элемента в произвольное место списка,
+    ## удаления элемента из конца и произвольного места списка.
+
+    def clear(self):
+        """
+        Метод для очистки всего списка (удаления всех элементов).
+        """
+        self = MyList.__init__(self)
+
+    def addIn(self, index, value):
+        """
+        Метод для вставки элемента в любое место по индексу.
+        """
+        new_list = iter(self)
+        # print(new_list, type(new_list), len(self))
+        l = len(self)
+        if index < 0:
+            index += l + 1
+        j = 0
+        # print(l)
+        self.clear()
+        # print(self, type(self))
+        for i in new_list:
+            if j != index and i != None:
+                self.append(i)
+            elif j == index:
+                print("This value was inserted:", value)
+                self.append(value)
+                self.append(i)
+            j += 1
+            # print(l)
+        print("New list", type(self).__name__, " is ->", self)
+
+    def pop(self):
+        """
+        Метод для удаления последнего элемента из списка.
+        """
+        # print(self, type(self))        
+        new_list = iter(self)
+        # print(new_list, type(new_list), len(self))
+        l = len(self)
+        if l == 0:
+            print("No items for deleting.")
+            return
+        # print(l)
+        self.clear()
+        # print(self, type(self))
+        for i in new_list:
+            if l > 1:
+                # print(l)
+                self.append(i)
+            elif l == 1:
+                print("This value was deleted:", i)
+            l -= 1
+
+    def popInd(self, index):
+        """
+        Метод для удаления элемента по индексу.
+        """
+        # print(self, type(self))        
+        new_list = iter(self)
+        # print(new_list, type(new_list), len(self))
+        l = len(self)
+        if index < 0:
+            index += l
+        j = 0
+        if l == 0 or l <= index:
+            print("No items for deleting.")
+            return
+        # print(l)
+        self.clear()
+        # print(self, type(self))
+        for i in new_list:
+            if j != index and i != None:
+                self.append(i)
+            else:
+                print(f"This value with index {str(index)}, it's {str(index + 1)} element in the list, was deleted:", i)
+            j += 1
+            # print(l)
+        # print(self, type(self))
 
     def __len__(self):
         return self._length
@@ -83,7 +173,7 @@ class MyList(object):
         if not 0 <= index < len(self):
             raise IndexError('list index out of range')
 
-        node = self._head
+        node = self._start
         for _ in range(index):
             node = node.next
 
@@ -94,8 +184,11 @@ class MyList(object):
 
 
 def main():
-    # Создание списка
-    my_list = MyList([1, 2, 5])
+    my_list = MyList([1, 2, 5, 4, 7, 8, 9])
+    print("List created:", my_list)
+    my_list.addIn(3, 444)
+    my_list.pop()
+    my_list.popInd(4)
 
     # Вывод длины списка
     print(len(my_list))
@@ -114,13 +207,6 @@ def main():
     # Повторный обход списка
     for element in my_list:
         print(element)
-
-    x = input("Введите действие которое хотите совершить:\n1. Очистить список.\n "
-              "2.добавления элемента в произвольное место списка\n"
-              "3.удаления элемента из конца и произвольного места списка.")
-
-    if x == "1":
-
 
 
 if __name__ == '__main__':
