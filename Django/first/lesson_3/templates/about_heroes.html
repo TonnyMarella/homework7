@@ -1,0 +1,13 @@
+{% extends 'main.html' %}
+{% block content %}
+<a>Добро пожаловать во вселенную звездных войн!<br>
+Выберите страницу:</a>
+<ol>
+  {% for i in hero %}
+    <li>
+      <big><a href="/lesson_3/main/heroes/{{ i.id }}/">
+        {{ i.text }}</a></big>
+    </li>
+  {% endfor %}
+</ol>
+{% endblock %}

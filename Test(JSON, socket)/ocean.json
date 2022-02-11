@@ -1,0 +1,18 @@
+{
+    "same": {
+        "axial tilt": 48,
+        "terrain": 86,
+        "acceleration of gravity": 12,
+        "flatness": 34
+    },
+    "different": {
+        "atmospheric composition": 15,
+        "density": 5700,
+        "illumination": 35,
+        "mass": 62345,
+        "radius": 6378,
+        "deviation from sphericity": 15,
+        "ocean depth": 1887,
+        "ocean composition": 65
+    }
+}

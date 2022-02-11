@@ -1,0 +1,14 @@
+{
+   "atmospheric composition": 15,
+   "density": 5700,
+   "illumination": 35,
+   "axial tilt": 48,
+   "terrain": 86,
+   "acceleration of gravity": 12,
+   "mass": 62345,
+   "radius": 6378,
+   "deviation from sphericity": 15,
+   "flatness": 34,
+   "ocean depth": 1887,
+   "ocean composition": 65
+}

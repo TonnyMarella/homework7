@@ -1,1 +1,5 @@
-print(6 % 8)
+import pytz
+from datetime import datetime
+tz = pytz.timezone('Europe/Moscow')
+current_datetime = datetime.now(tz)
+print(current_datetime.time().strftime('%H:%M:%S'))

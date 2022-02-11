@@ -1,0 +1,36 @@
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+
+<div class="row">
+  <h5>XSS attack</h5>
+  <div class="col-6">
+    <form method="post">
+      {% csrf_token %}
+      <label for="user_input">Input some value</label>
+      <input id="user_input" name="user_input" type="text">
+      <button type="submit">Submit data</button>
+    </form>
+  </div>
+  <div class="col-6">
+    <button onclick={{ my_variable }}>Don't touch</button>
+  </div>
+</div>
+
+
+<div class="row">
+  <h5>SQL attack</h5>
+  <div class="col-6">
+    <form method="post">
+      {% csrf_token %}
+      <label for="user_input_sql">Input some value</label>
+      <input id="user_input_sql" name="user_input_sql" type="text">
+      <button type="submit">Submit data</button>
+    </form>
+  </div>
+</div>
+<div class="col-6">
+  <p>{{ my_valiable_sql }}</p>
+</div>

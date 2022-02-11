@@ -1,0 +1,12 @@
+{% extends 'main.html' %}
+{% block content %}
+<ol>
+  {% if lets_do_it%}
+  {% for i in lets_do_it|dictsortreversed:'priority'%}
+    <li>{{ i.priority }}({{ i.task }}) </li>
+  {% endfor %}
+</ol>
+  {%else%}
+    <p>Список пока пуст</p>
+  {%endif%}
+{% endblock %}

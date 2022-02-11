@@ -1,0 +1,14 @@
+{% extends 'main.html' %}
+{% block content %}
+<th>Добро пожаловать во вселенную звездных войн!</th>
+<th>Выберите страницу:</th>
+<tr>
+    <td><a href="{% url 'luke' %}" type="button">Люк</a></td>
+</tr>
+<tr>
+    <td><a href="{% url 'lea' %}" type="button">Лея</a></td>
+</tr>
+<tr>
+    <td><a href="{% url 'xan' %}" type="button">Хан</a></td>
+</tr>
+{% endblock %}
