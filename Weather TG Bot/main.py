@@ -30,9 +30,14 @@ async def get_weather(message: types.Message):
         temp_min = data['main']['temp_min']
         wind = data['wind']['speed']
         weather_description = data['weather'][0]['description']
+        weather_info = data['weather'][0]['main']
+        if weather_info in config.code_to_smile:
+            wd = config.code_to_smile[weather_description]
+        else:
+            wd = "Look out the window:)"
 
         await message.reply(f"{datetime.now().strftime('%d/%m/%Y %H:%M')}\nCity: {city}\n"
-                            f"Temperature: {temp}° {weather_description}\n"
+                            f"Temperature: {temp}° {weather_description}{wd}\n"
                             f"Maximum temperature: {temp_max}°\nMinimal temperature: {temp_min}°\n"
                             f"Wind speed: {wind}\n")
     except:
