@@ -2,6 +2,8 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Django/First(clone)/myfirst" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Django/Virtual/myfirst" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/Git курсы" vcs="Git" />
   </component>
 </project>
