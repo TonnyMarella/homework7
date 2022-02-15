@@ -32,7 +32,7 @@ async def get_weather(message: types.Message):
         weather_description = data['weather'][0]['description']
         weather_info = data['weather'][0]['main']
         if weather_info in config.code_to_smile:
-            wd = config.code_to_smile[weather_description]
+            wd = config.code_to_smile[weather_info]
         else:
             wd = "Look out the window:)"
 
