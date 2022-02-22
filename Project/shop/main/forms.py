@@ -1,8 +1,8 @@
-from django import forms
 from django.forms import Textarea
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .models import Reviews
+from django import forms
 
 
 class UserOurRegistration(UserCreationForm):
@@ -22,5 +22,3 @@ class ReviewForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['text'].widget = Textarea(attrs={'rows': 5})
-
-

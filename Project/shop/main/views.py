@@ -1,10 +1,9 @@
-from django.shortcuts import render
-from .models import Product
-from django.views import View
-from .forms import UserOurRegistration, ReviewForm
+from .forms import ReviewForm
 from django.views.generic import DetailView
 from django.views.generic.edit import FormMixin
 from django.urls import reverse_lazy
+from django.shortcuts import render
+from .models import Product
 
 
 def index(request):

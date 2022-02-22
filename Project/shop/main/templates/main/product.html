@@ -19,8 +19,15 @@
             <h3><strong>Цена товара:</strong> {{ get_product.price }} гривен</h3>
             <h3><strong>Описание товара:</strong></h3>
             <p>{{ get_product.description }}</p>
-            <form action="#" method="post">
-                <input type="submit" value="Add to cart">
+            <p class="price">${{ product.price }}</p>
+            {% if user.is_authenticated %}
+                <form action="#" method="post">
+                    {{ cart_product_form }}
+                    {% csrf_token %}
+                    <input type="submit" value="Купить">
+            {% else %}
+                <p>Для того чтоб купить товар вам необходимо войти в аккаунт</p>
+            {% endif %}
             </form>
         </div>
     </div>
