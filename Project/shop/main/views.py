@@ -1,23 +1,39 @@
 from django.shortcuts import render
 from .models import Product
 from django.views import View
-from .forms import UserOurRegistration
+from .forms import UserOurRegistration, ReviewForm
+from django.views.generic import DetailView
+from django.views.generic.edit import FormMixin
+from django.urls import reverse_lazy
+
 
 def index(request):
     return render(request, 'main/index.html')
 
 
-def product(request, pk):
-    product = Product.objects.get(pk=pk)
-    context = {
-        'product': product
-    }
-    session_key = request.session.session_key
-    if not session_key:
-        request.session["session_key"] = 123
-        request.session.cycle_key()
-        print(request.session.session_key)
-    return render(request, 'main/product.html', context)
+class ProductDetailView(DetailView, FormMixin):
+    model = Product
+    template_name = 'main/product.html'
+    context_object_name = 'get_product'
+    form_class = ReviewForm
+    success_msg = 'Комментарий успешно создан'
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('product', kwargs={'pk': self.get_object().id})
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.product_review = self.get_object()
+        self.object.author = self.request.user
+        self.object.save()
+        return super().form_valid(form)
 
 
 def shop(request):

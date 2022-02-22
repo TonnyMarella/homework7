@@ -33,13 +33,12 @@ class Customer(models.Model):
 
 
 class Reviews(models.Model):
-    email = models.EmailField()
-    name = models.CharField(max_length=100)
     text = models.TextField(max_length=2000)
-    product_review = models.ForeignKey(Product, verbose_name='Продукт', on_delete=models.CASCADE)
+    product_review = models.ForeignKey(Product, verbose_name='Продукт', on_delete=models.CASCADE,
+                                       related_name='comments_products', blank=True, null=True)
 
     def __str__(self):
-        return f'{self.name} - {self.product_review}'
+        return f'{self.product_review}'
 
     class Meta:
         verbose_name = 'Отзыв'

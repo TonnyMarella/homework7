@@ -1,34 +1,45 @@
 {% extends 'main/main.html' %}
 {% load static %}
 {% block title_page %}
-<title>{{ product.name }}</title>
+<title>{{ get_product.name }}</title>
 {% endblock title_page %}
 
 {% block content %}
-    <section class="main-section" id="service">
+    <section id="service">
         <div class="container">
-            <h2>{{ product.name }}</h2>
+            <h2>{{ get_product.name }}</h2>
         </div>
     </section>
 
-    <div class="container">
+    <div>
         <figure class="col-lg-7 col-sm-6 text-right wow fadeInUp delay-02s">
-            <a href="img/Portfolio-pic1.jpg"><img src="{{ product.img.url }}" alt="Изображение"></a>
+            <a href="img/Portfolio-pic1.jpg"><img src="{{ get_product.img.url }}" alt="Изображение"></a>
         </figure>
         <div class="featured-box-col2 wow fadeInRight delay-02s">
-            <h3><strong>Цена товара:</strong> {{ product.price }} гривен</h3>
+            <h3><strong>Цена товара:</strong> {{ get_product.price }} гривен</h3>
             <h3><strong>Описание товара:</strong></h3>
-            <p>{{ product.description }}</p>
+            <p>{{ get_product.description }}</p>
             <form action="#" method="post">
                 <input type="submit" value="Add to cart">
             </form>
         </div>
     </div>
-    <form action="" method="post">
-        {% csrf_token %}
-        <input type="text" placeholder="Имя" name="fname" />
-        <input type="email" placeholder="E-mail" name="email" />
-        <textarea placeholder="Сообщение" name="message" rows="10" cols="45"></textarea>
-        <input type="submit" value="Отправить" />
-    </form>
+    <div class="col-4">
+        <p>Комментарии</p>
+        {% for item in get_product.comments_products.all %}
+        -{{ item.text }}<br>
+        {% endfor %}
+        {% if user.is_authenticated %}
+            <p>Добавить комментарий</p>
+            <form action="" id="add_form" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary" >Добавить</button>
+            </form>
+        {% else %}
+            <p>Для того чтоб оставить отзыв вам необходимо войти в аккаунт</p>
+        {% endif %}
+    </div>
+
+
 {% endblock content %}
