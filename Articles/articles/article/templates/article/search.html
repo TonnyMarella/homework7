@@ -1,0 +1,18 @@
+{% extends 'articles/base.html' %}
+
+{% block title %}
+{{ article.title }}
+{% endblock %}
+
+{% block content %}
+<div class="p-4 p-md-5 mb-4 text-white rounded bg-dark">
+    <div class="col-md-15 px-0">
+        {% for i in search_list %}
+      <h1 align="center" class="display-4 fst-italic">{{ i.title }}</h1>
+      <p style="height: 60px; overflow: hidden;" class="lead my-3">{{ i.text }}</p>
+        <p class="lead mb-0"><a href="{% url 'articles:detail' i.id %}" class="text-white fw-bold">Продолижить читать...</a></p>
+        {% endfor %}
+    </div>
+  </div>
+
+{% endblock %}

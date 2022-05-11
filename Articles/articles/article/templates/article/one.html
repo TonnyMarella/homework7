@@ -1,0 +1,36 @@
+{% extends 'articles/base.html' %}
+
+{% block title %}
+{{ article.title }}
+{% endblock %}
+
+{% block content %}
+<div class="p-4 p-md-5 mb-4 text-white rounded bg-dark">
+    <div class="col-md-15 px-0">
+      <h1 align="center" class="display-4 fst-italic">{{ article.title }}</h1>
+      <p class="lead my-11">{{ article.text }}</p>
+        <h1 align="center" class="Commets">Комментарии</h1>
+        <hr>
+        {% if latest_comments_list %}
+            {% for com in latest_comments_list %}
+                    <strong>{{com.author_name}}</strong>
+                    <p>{{com.comment_text}}</p>
+            {% endfor %}
+        {% else %}
+        Комментарии не найдены
+        {% endif %}
+        <hr>
+        <form action="{% url 'articles:leave_comment' article.id %}" method="POST">
+        {% csrf_token %}
+            {% if user.is_authenticated %}
+                <input type="hidden" name="username" value={{user.username}} id="username">
+                <textarea name="text" required="" placeholder="Текст комментария" cols="30" rows="10"></textarea><br>
+                <button type="submit">Оставить комментарий</button>
+            {% else %}
+            <p>Для того чтоб оставить комментарий, авторизируйтесь!</p>
+            {% endif %}
+            </form>
+    </div>
+  </div>
+
+{% endblock %}
