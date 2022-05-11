@@ -1,4 +1,4 @@
-{% extends 'articles/base.html' %}
+{% extends 'article/base.html' %}
 
 {% block title %}
 {{ article.title }}
@@ -20,7 +20,7 @@
         Комментарии не найдены
         {% endif %}
         <hr>
-        <form action="{% url 'articles:leave_comment' article.id %}" method="POST">
+        <form action="{% url 'article:leave_comment' article.id %}" method="POST">
         {% csrf_token %}
             {% if user.is_authenticated %}
                 <input type="hidden" name="username" value={{user.username}} id="username">

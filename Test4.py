@@ -1,27 +1,30 @@
-import requests
-from time import time
+def find_missing(sequence):
+    num = sequence[1] - sequence[0]
+    if not sequence[3] - sequence[2] == num:
+        num = sequence[-1] - sequence[-2]
+
+    for i in range(len(sequence)):
+        if not sequence[i] + num == sequence[i+1]:
+            result = sequence[i] + num
+            break
+    return result
 
 
-def get_images(url):
-    r = requests.get(url, allow_redirects=True)
-    return r
+print(find_missing([1, -2, -5, -8, -14, -17, -20, -23, -26]))
+print(find_missing([-13, 5, 14, 23, 32, 41, 50, 59, 68]))
+print(find_missing([-1, -7, -10, -13, -16, -19, -22, -25, -28]))
 
-
-def get_write(response):
-    # https://loremflickr.com/cache/resized/65535_51359544383_5623237928_320_240_nofilter.jpg
-    filename = response.url.split('/')[-1]
-    with open(filename, 'wb') as file:
-        file.write(response.content)
-
-
-def main():
-    start = time
-    url = "https://loremflickr.com/320/240"
-
-    for i in range(10):
-        get_write(get_images(url))
-
-    print(time() - start)
-
-if __name__ == '__main__':
-    main()
+# def find_missing(sequence):
+#     num = sequence[1] - sequence[0]
+#     if sequence[3] - sequence[2] == num:
+#         pass
+#     else:
+#         num = sequence[-1] - sequence[-2]
+#
+#     for i in range(len(sequence)):
+#         if sequence[i] + num == sequence[i+1]:
+#             pass
+#         else:
+#             result = sequence[i] + num
+#             break
+#     return result

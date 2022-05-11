@@ -1,0 +1,9 @@
+{% extends 'article/base.html' %}
+
+{% block title %}Welcome{% endblock %}
+
+{% block content %}
+    <h1>Здравствуй {{ new_user.first_name }}!</h1>
+    <p>Ваш аккаунт создан, можете войти <a href="/user/login">Войти</a>.</p>
+    <p>Или можете вернуться на главную <a href="/">Главная</a>.</p>
+{% endblock %}

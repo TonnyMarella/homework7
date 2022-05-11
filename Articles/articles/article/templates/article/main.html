@@ -1,4 +1,4 @@
-{% extends 'articles/base.html' %}
+{% extends 'article/base.html' %}
 
 {% block title %}
 Главная страница
@@ -13,13 +13,14 @@
 
 {% block content %}
 <div class="p-4 p-md-5 mb-4 text-white rounded bg-dark">
-    <a href="{% url 'articles:sort_by_alphabet' %}">Алфавит</a>
+    <a href="{% url 'article:sort_by_alphabet' %}">Алфавит</a>
     <hr>
     <div class="col-md-6 px-0">
-        {% for item in articles %}
+        {% for item in article %}
+        <h2>Автор: {{ item.author_article.name }}</h2>
       <h1 class="display-4 fst-italic">{{ item.title }}</h1>
       <p style="height: 60px; overflow: hidden;" class="lead my-3">{{ item.text }}</p>
-      <p class="lead mb-0"><a href="{% url 'articles:detail' item.id %}" class="text-white fw-bold">Продолижить читать...</a></p>
+      <p class="lead mb-0"><a href="{% url 'article:detail' item.id %}" class="text-white fw-bold">Продолижить читать...</a></p>
         {% endfor %}
     </div>
   </div>

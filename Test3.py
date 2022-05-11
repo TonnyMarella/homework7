@@ -1,10 +1,26 @@
-import requests
 from bs4 import BeautifulSoup as BS
-r = requests.get("https://sinoptik.ua/%D0%BF%D0%BE%D0%B3%D0%BE%D0%B4%D0%B0-%D0%BA%D0%B8%D0%B5%D0%B2")
-html = BS(r.content, 'html.parser')
-for el in html.select('#content'):
-    t_min = el.select(".temperature")[0].text
-    print(t_min)
-    t_max = el.select(".temperature .max")[0].text
-    print((t_max))
+import requests
+import csv
 
+
+URL = 'https://auto.ria.com/uk/newauto/category-legkovie/'
+LINK = 'https://auto.ria.com/uk/newauto/'
+car_page_url = []
+
+r = requests.get(URL)
+result = BS(r.text, 'html.parser')
+items = result.find_all('section', class_='proposition')
+
+name_car = []
+city_car = []
+link_car = []
+for item in items:
+    link_car.append(LINK + item.find('a', class_='proposition_link').get('href'))
+    city_car.append(item.find('div', class_='proposition_information').find('span').get('title'))
+    name_car.append(item.find('div', class_='proposition_title').find('span').get_text(strip=True))
+
+with open('avtoria.csv', 'w', newline='', encoding="utf-8") as file:
+    writer = csv.writer(file, delimiter=';')
+    writer.writerow(['Название', 'Город', 'Ссылка'])
+    for i in range(len(name_car)):
+        writer.writerow(name_car[i])

@@ -16,9 +16,9 @@
       </a>
 
       <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
-          <form class='search' action="{% url 'articles:search' %}" method="GET">
+          <form class='search' action="{% url 'article:search' %}" method="GET">
               {% csrf_token %}
-              <input type="search" placeholder="Введите название" name="search" class="form-control" required=""></a>
+              <input type="search" placeholder="Введите название" name="search" class="form-control" required="">
               <button type="submit" class="btn1 btn">Поиск</button>
           </form>
         <a class="me-3 py-2 text-dark text-decoration-none" href="/">Главная</a>
