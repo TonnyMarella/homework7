@@ -9,3 +9,4 @@ urlpatterns = [
     path('search/', views.search, name='search'),
     path('sort/', views.sort_by_alphabet, name='sort_by_alphabet')
 ]
+# профиль пользователя, стелай страничку HTML, реализовать через формы ПОСТ и просто менять всю инфу если инфа валидная

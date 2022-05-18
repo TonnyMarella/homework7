@@ -1,0 +1,14 @@
+{% extends 'article/base.html' %}
+{% load crispy_forms_tags %}
+{% block title_page %}
+Профиль
+{% endblock title_page %}
+{% block content %}
+<h1 align="center">Здравствуйте, {{ user.username }}</h1>
+{% if user.profile.birth_date %}
+<h3>Дата вашего рождения: {{ user.profile.birth_date }}</h3>
+<a href="{% url 'user:update_profile' user.profile.user_id %}">Изменить</a>
+{% else %}
+{% endif %}
+
+{% endblock %}

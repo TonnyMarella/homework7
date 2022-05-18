@@ -23,11 +23,11 @@
           </form>
         <a class="me-3 py-2 text-dark text-decoration-none" href="/">Главная</a>
           {% if user.is_authenticated %}
-          <a class="me-3 py-2 text-dark text-decoration-none" href="#">{{ user.username }}</a>
+          <a class="me-3 py-2 text-dark text-decoration-none" href="{% url 'user:profile' %}">{{ user.username }}</a>
           <a class="py-2 text-dark text-decoration-none" href="{% url 'exit' %}">Выход</a>
           {% else %}
-        <a class="me-3 py-2 text-dark text-decoration-none" href="{% url 'login' %}">Вход</a>
-        <a class="py-2 text-dark text-decoration-none" href="{% url 'registration' %}">Регистрация</a>
+        <a class="me-3 py-2 text-dark text-decoration-none" href="{% url 'user:login' %}">Вход</a>
+        <a class="py-2 text-dark text-decoration-none" href="{% url 'user:registration' %}">Регистрация</a>
           {% endif %}
       </nav>
     </div>
