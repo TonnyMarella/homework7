@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class AuthorArticle(models.Model):
@@ -21,6 +22,7 @@ class Article(models.Model):
     text = models.TextField('Содержимое', )
     create = models.DateTimeField('Создано', auto_now_add=True)
     author_article = models.ForeignKey(AuthorArticle, on_delete=models.CASCADE, default=1)
+    favorite = models.ManyToManyField(User, blank=True)
 
     def __str__(self):
         return self.title

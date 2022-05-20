@@ -1,15 +1,8 @@
 {% extends 'article/base.html' %}
 
 {% block title %}
-Главная страница
+Избранное
 {% endblock %}
-
-<style>
-    .lead my-3 {
-     height: 31px;
-    overflow: hidden;
-     }
-</style>
 
 {% block content %}
 <div class="p-4 p-md-5 mb-4 text-white rounded bg-dark">
@@ -21,11 +14,6 @@
       <h1 class="display-4 fst-italic">{{ item.title }}</h1>
       <p style="height: 60px; overflow: hidden;" class="lead my-3">{{ item.text }}</p>
       <p class="lead mb-0"><a href="{% url 'article:detail' item.id %}" class="text-white fw-bold">Продолижить читать...</a></p>
-        <form method="POST" action="{% url 'article:favorite' %}">
-            {% csrf_token %}
-            <input type="hidden" name="article_id" value="{{ item.id }}" id="article_id">
-            <button>Добавить в избранное</button>
-            </form>
         {% endfor %}
     </div>
   </div>

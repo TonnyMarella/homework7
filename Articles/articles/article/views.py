@@ -1,7 +1,8 @@
 from django.shortcuts import render
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, HttpResponse
 from .models import Article
 from django.urls import reverse
+from django.contrib.auth.models import User
 
 
 def index(request):
@@ -39,5 +40,21 @@ def search(request):
 def sort_by_alphabet(request):
     article = Article.objects.order_by('title')
     return render(request, 'article/main.html', {'article': article})
+
+
+def favorite(request):
+    user = request.user
+
+    if request.method == 'GET':
+        favorite_article = user.article_set.all()
+        return render(request, 'article/favorite.html', {'article': favorite_article})
+
+    if request.method == 'POST':
+        article = Article.objects.get(id=request.POST['article_id'])
+        article.favorite.add(user)
+        article.save()
+        return HttpResponse(status=204)
+
+
 
 
