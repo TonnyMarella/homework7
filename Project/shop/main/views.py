@@ -1,3 +1,5 @@
+from django.http import HttpResponse
+
 from .forms import ReviewForm
 from django.views.generic import DetailView
 from django.views.generic.edit import FormMixin
@@ -41,3 +43,21 @@ def shop(request):
         'pr': product
     }
     return render(request, 'main/shop.html', context)
+
+
+def basket(request):
+    user = request.user
+
+    if request.method == 'GET':
+        user_basket = user.product_set.all()
+        total_price = 0
+        for i in user_basket:
+            total_price += i.price
+
+        return render(request, 'main/basket.html', {'user_basket': user_basket, 'total_price': total_price})
+
+    elif request.method == 'POST':
+        product = Product.objects.get(id=request.POST['product_id'])
+        product.basket.add(user)
+        product.save()
+        return HttpResponse(status=204)

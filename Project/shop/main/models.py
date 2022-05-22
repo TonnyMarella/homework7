@@ -1,7 +1,13 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Product(models.Model):
+
+    class Meta():
+        verbose_name = 'Продукт'
+        verbose_name_plural = 'Продукты'
+
     MOBILE = 'mobile'
     NOTEBOOK = 'notebook'
     PC = 'pc'
@@ -19,6 +25,7 @@ class Product(models.Model):
     availability = models.BooleanField(default=True)
     group = models.CharField(max_length=20, choices=CHOICE_GROUP, default=MOBILE)
     img = models.ImageField(default='no_image.jpg', upload_to='product_image')
+    basket = models.ManyToManyField(User, blank=True)
 
     def __str__(self):
         return f'{self.name}'

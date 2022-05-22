@@ -30,7 +30,7 @@
 							<p>Цена: {{ post.price }}</p>
 						</div>
 					{% elif post.group == 'pc' %}
-						<div class=" Portfolio-box printdesign">
+						<div class="Portfolio-box printdesign">
 							<img src="{{ post.img.url }}" alt="">
 							<a href="{% url 'product' post.id %}"><h3>{{ post.name }}</h3></a>
 							<p>Цена: {{ post.price }}</p>

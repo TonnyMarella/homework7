@@ -19,12 +19,12 @@
             <h3><strong>Цена товара:</strong> {{ get_product.price }} гривен</h3>
             <h3><strong>Описание товара:</strong></h3>
             <p>{{ get_product.description }}</p>
-            <p class="price">${{ product.price }}</p>
             {% if user.is_authenticated %}
-                <form action="#" method="post">
+                <form action="{% url 'basket' %}" method="POST">
                     {{ cart_product_form }}
                     {% csrf_token %}
-                    <input type="submit" value="Купить">
+                    <input type="hidden" name="product_id" value="{{ get_product.id }}" id="product_id">
+                    <input type="submit" value="В корзину">
             {% else %}
                 <p>Для того чтоб купить товар вам необходимо войти в аккаунт</p>
             {% endif %}
@@ -37,12 +37,13 @@
         -{{ item.text }}<br>
         {% endfor %}
         {% if user.is_authenticated %}
-            <p>Добавить комментарий</p>
             <form action="" id="add_form" method="post">
             {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-primary" >Добавить</button>
+                <p>Добавить комментарий</p>
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary" >Добавить</button>
             </form>
+
         {% else %}
             <p>Для того чтоб оставить отзыв вам необходимо войти в аккаунт</p>
         {% endif %}

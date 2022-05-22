@@ -1,0 +1,29 @@
+{% extends 'main/main.html' %}
+{% load static %}
+{% block title_page %}
+<title>Корзина</title>
+{% endblock title_page %}
+
+{% block content %}
+    {% for item in user_basket %}
+    <div class="p-4 p-md-5 mb-4 text-white rounded bg-dark">
+        <a href="img/Portfolio-pic1.jpg"><img src="{{ item.img.url }}" alt="Изображение"></a>
+    <hr>
+    <div class="col-md-6 px-0">
+        <h1>{{ item.name }}</h1>
+      <h2 class="display-4 fst-italic">Цена: {{ item.price }}</h2>
+        {% if item.availability %}
+        <p style="height: 60px; overflow: hidden;" class="lead my-3">В наличии: Есть</p>
+        {% else %}
+        <p style="height: 60px; overflow: hidden;" class="lead my-3">В наличии: Нету</p>
+        {% endif %}
+      <p class="lead mb-0"><a href="{% url 'product' item.id %}" class="text-white fw-bold">На страницу товара...</a></p>
+        {% endfor %}
+        <hr>
+        <h4 style="color:black">К оплате: {{ total_price }} грн</h4>
+        <a style="color:blue" href="#"><h4>Перейти к оплате</h4></a>
+    </div>
+  </div>
+
+
+{% endblock content %}
