@@ -20,7 +20,7 @@ for item in items:
     name_car.append(item.find('div', class_='proposition_title').find('span').get_text(strip=True))
 
 with open('avtoria.csv', 'w', newline='', encoding="utf-8") as file:
-    writer = csv.writer(file, delimiter=';')
+    writer = csv.writer(file)
     writer.writerow(['Название', 'Город', 'Ссылка'])
     for i in range(len(name_car)):
         writer.writerow(name_car[i])

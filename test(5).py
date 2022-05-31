@@ -1,10 +1,2 @@
-class RomanNumerals:
-    CONST = {
-        "|": 1,
-
-    }
-    def to_roman(val):
-        return ''
-
-    def from_roman(roman_num):
-        return 0
+for i in range(1, 1):
+    print('+')
