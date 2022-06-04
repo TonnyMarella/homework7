@@ -1,203 +1,230 @@
 from bs4 import BeautifulSoup as BS
-from const import model_cars_otto, model_cars_mobile
-import requests
+from const import marks_cars_otto, marks_cars_mobile
+from abc import ABC, abstractmethod
 import xlsxwriter
+import requests
 
 
-def oto_motto(from_price, to_price, od_year, to_year, od_mileage, to_mileage, color='black', name='opel'):
-    from_price = str(int(from_price * 4.32))
-    to_price = str(int(to_price * 4.32))
+class AbstractAutoParser(ABC):
     car_name = []
     car_price = []
     car_link = []
     car_year = []
     car_mileage = []
-    pages = 1
-    page = 1
 
-    URL = "https://www.otomoto.pl/osobowe/" + name + "/od-" + od_year +\
-          "?search%5Bfilter_float_year%3Ato%5D=" + to_year +\
-          "&search%5Bfilter_float_mileage%3Afrom%5D=" + od_mileage +\
-          "&search%5Bfilter_float_price%3Afrom%5D=" + from_price +\
-          "&search%5Bfilter_float_price%3Ato%5D=" + to_price +\
-          "&search%5Bfilter_float_mileage%3Ato%5D=" + to_mileage +\
-          "&search%5Bfilter_enum_upholstery_type%5D=upholstery-with-leather-inserts"\
-          "&search%5Bfilter_enum_color%5D=" + color
+    def __init__(self):
+        super().__init__()
+        self.headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
+                          ' AppleWebKit/537.36 (KHTML, like Gecko)'
+                          ' Chrome/101.0.4951.67 Safari/537.36'}
 
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
-                      ' Chrome/101.0.4951.67 Safari/537.36'}
+    @abstractmethod
+    def parser(self):
+        pass
 
-    r = requests.get(URL, headers=headers)
-    html = BS(r.content, 'html.parser')
-
-    if html.find_all('div', class_="ooa-1oll9pn e19uumca7"):
-        pages = int(html.find_all('div', class_="ooa-1oll9pn e19uumca7")[0].find_all('li')[-2].text)
-
-    while page <= pages:
-        print('otto', page)
-        r = requests.get(URL + "&page=" + str(page), headers=headers)
-
-        html = BS(r.content, 'html.parser')
-        print(URL)
-
-        car_date = html.find_all('article', class_='ooa-rld5ij e1b25f6f18')
-
-        for date in car_date:
-            car_name.append(date.find('a').text)
-            car_link.append(date.find('a').get('href'))
-            car_price.append(date.find('span', class_='ooa-epvm6 e1b25f6f8').text)
-            car_year.append(date.find('ul').text[:4] + ' год')
-            car_mileage.append(date.find('ul').text[5: 12] + ' км')
-
-        print('otto', car_name)
-        page += 1
-
-    return [car_name, car_link, car_price, car_year, car_mileage]
+    @abstractmethod
+    def save_car_date(self):
+        pass
 
 
-def mobile(from_price, to_price, od_year, to_year, od_mileage, to_mileage, color='BLACK', name='19000'):
-    from_price = str(int(from_price * 1.06))
-    to_price = str(int(to_price * 1.06))
+class MobileParser(AbstractAutoParser):
+    def __init__(self, url):
+        super().__init__()
+        self.url = url
+        self.pages = 1
+        self.page = 1
 
-    car_name = []
-    car_price = []
-    car_link = []
-    car_year = []
-    car_mileage = []
-    pages = 1
-    page = 1
-
-    URL = 'https://suchen.mobile.de/fahrzeuge/search.html'\
-          '?fr=' + od_year + '%3A' + to_year + '&isSearchRequest=true''&ml=' + od_mileage + \
-          '%3A' + to_mileage + '&ms=' + name + '%3B%3B%3B%3B&it=PARTIAL_LEATHER&p=' + from_price + '%3A' + to_price + \
-          '&ref=srp&refId=9304704f-45d6-64c8-fbf1-3dbe9597f523&s=Car&sb=rel&sfmr=false&vc=Car&ecol=' + color
-
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
-                      ' Chrome/101.0.4951.67 Safari/537.36'}
-
-    r = requests.get(URL, headers=headers)
-
-    html = BS(r.content, 'html.parser')
-
-    if html.find_all('ul', class_="pagination"):
-        pages = int(html.find_all('span', class_='btn btn--secondary btn--l')[-1].text)
-
-    while page <= pages:
-        print('mobile: ', page)
-        r = requests.get(URL + 'pageNumber=' + str(page), headers=headers)
-
+    def parser(self):
+        r = requests.get(self.url, headers=self.headers)
         html = BS(r.content, 'html.parser')
 
-        car_date = html.find_all('div', class_='cBox-body cBox-body--resultitem')
+        if html.find_all('ul', class_="pagination"):
+            self.pages = int(html.find_all(
+                'span', class_='btn btn--secondary btn--l')[-1].text)
 
-        for date in car_date:
-            car_name.append(date.find('span', class_='h3 u-text-break-word').text)
-            car_link.append(date.find('a').get('href'))
-            car_price.append(date.find('span', class_='h3 u-block').text[:-2] + ' евро')
-            car_year.append(date.find('div', class_='vehicle-data--ad-with-price-rating-label').text[3:10])
-            car_mileage.append(date.find('div', class_='vehicle-data--ad-with-price-rating-label').text[12:21])
+    def save_car_date(self):
+        while self.page <= self.pages:
+            print('mobile: ', self.page)
+            r = requests.get(self.url + 'pageNumber=' + str(self.page),
+                             headers=self.headers)
 
-        page += 1
+            html = BS(r.content, 'html.parser')
 
-    return [car_name, car_link, car_price, car_year, car_mileage]
+            car_date = html.find_all('div',
+                                     class_='cBox-body cBox-body--resultitem')
+
+            for date in car_date:
+                AbstractAutoParser.car_name.append(
+                    date.find('span', class_='h3 u-text-break-word').text)
+                AbstractAutoParser.car_link.append(
+                    date.find('a').get('href'))
+                AbstractAutoParser.car_price.append(
+                    date.find('span', class_='h3 u-block').text[:-2] + ' евро')
+                AbstractAutoParser.car_year.append(
+                    date.find('div', class_='vehicle-data--ad-with-price-rating-label').text[3:10])
+                AbstractAutoParser.car_mileage.append(
+                    date.find('div', class_='vehicle-data--ad-with-price-rating-label').text[12:19])
+
+            self.page += 1
 
 
-def gidas(from_price, to_price, od_year, to_year, od_mileage, to_mileage, name='opel'):
-    from_price = str(int(from_price * 1.06))
-    to_price = str(int(to_price * 1.06))
+class GidasParser(AbstractAutoParser):
+    def __init__(self, url):
+        super().__init__()
+        self.url = url
+        self.pages = 1
+        self.page = 1
 
-    car_name = []
-    car_price = []
-    car_link = []
-    car_year = []
-    car_mileage = []
-    pages = 1
-    page = 1
-
-    URL = "https://autogidas.lt/ru/skelbimai/automobiliai/" \
-          "?f_215=" + from_price + "&f_216=" + to_price + \
-          "&f_41=" + od_year + "&f_42=" + to_year + \
-          "&f_65=" + od_mileage + "&f_66=" + to_mileage + "&f_5=Juoda&a_18=1&s=1372972183&f_1%5B0%5D=" + name
-
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
-                      ' Chrome/101.0.4951.67 Safari/537.36'}
-
-    r = requests.get(URL, headers=headers)
-
-    html = BS(r.content, 'html.parser')
-
-    if html.find_all('div', class_="pagination"):
-        pages = int(html.find_all('div', class_='paginator')[0].text[-5:].replace(' ', ''))
-
-    while page <= pages:
-        print('gidas: ', page)
-
-        r = requests.get(URL + "&page=" + str(page), headers=headers)
+    def parser(self):
+        r = requests.get(self.url, headers=self.headers)
         html = BS(r.content, 'html.parser')
-        print(URL)
+        print(self.url)
+        if html.find_all('div', class_="pagination"):
+            self.pages = int(html.find_all(
+                'div', class_='paginator')[0].text[-5:].replace(' ', ''))
 
-        car_date = html.find_all('article', class_='list-item')
+    def save_car_date(self):
+        while self.page <= self.pages:
+            print('gidas: ', self.page)
 
-        for date in car_date:
-            car_name.append(date.find('h2', class_='item-title').text)
-            car_link.append('https://autogidas.lt/' + date.find('a').get('href'))
-            car_price.append(date.find('div', class_='item-price').text.replace(' ', ''))
-            car_year.append(date.find('div', class_='primary').text[:-20])
-            car_mileage.append(date.find('div', class_='secondary').text[:-20])
+            r = requests.get(
+                self.url + "&page=" + str(self.page), headers=self.headers)
+            html = BS(r.content, 'html.parser')
 
-        print('gidas', car_name)
+            car_date = html.find_all('article', class_='list-item')
 
-        page += 1
+            for date in car_date:
+                AbstractAutoParser.car_name.append(
+                    date.find('h2', class_='item-title').text)
+                AbstractAutoParser.car_link.append(
+                    'https://autogidas.lt/' + date.find('a').get('href'))
+                AbstractAutoParser.car_price.append(
+                    date.find('div', class_='item-price').text.replace(' ', ''))
+                AbstractAutoParser.car_year.append(
+                    date.find('div', class_='primary').text[:-20])
+                AbstractAutoParser.car_mileage.append(
+                    date.find('div', class_='secondary').text[:-20])
 
-    return [car_name, car_link, car_price, car_year, car_mileage]
+            self.page += 1
+
+
+class OttoParser(AbstractAutoParser):
+    def __init__(self, url, model_car):
+        super().__init__()
+        self.model_car = model_car
+        self.url = url
+        self.pages = 1
+        self.page = 1
+
+    def parser(self):
+        r = requests.get(self.url, headers=self.headers)
+        html = BS(r.content, 'html.parser')
+
+        if html.find_all('div', class_="ooa-1oll9pn e19uumca7"):
+            self.pages = int(html.find_all(
+                'div', class_="ooa-1oll9pn e19uumca7")[0].find_all('li')[-2].text)
+
+    def save_car_date(self):
+        while self.page <= self.pages:
+            print('otto', self.page)
+            r = requests.get(self.url + "&page=" +
+                             str(self.page), headers=self.headers)
+
+            html = BS(r.content, 'html.parser')
+
+            car_date = html.find_all('article',
+                                     class_='ooa-rld5ij e1b25f6f18')
+
+            for date in car_date:
+                if date.find('a').text.lower().count(self.model_car) == 0:
+                    continue
+
+                AbstractAutoParser.car_name.append(
+                    date.find('a').text)
+                AbstractAutoParser.car_link.append(
+                    date.find('a').get('href'))
+                AbstractAutoParser.car_price.append(
+                    date.find('span', class_='ooa-epvm6 e1b25f6f8').text)
+                AbstractAutoParser.car_year.append(
+                    date.find('ul').text[:4] + ' год')
+                AbstractAutoParser.car_mileage.append(
+                    date.find('ul').text[5: 12] + ' км')
+
+            self.page += 1
+
+
+def save_date():
+    workbook = xlsxwriter.Workbook('hello.xlsx')
+    worksheet = workbook.add_worksheet()
+
+    for i in range(0, len(AbstractAutoParser.car_name)):
+        worksheet.write(f'A{i + 1}', AbstractAutoParser.car_name[i])
+        worksheet.write(f'B{i + 1}', AbstractAutoParser.car_price[i])
+        worksheet.write(f'C{i + 1}', AbstractAutoParser.car_year[i])
+        worksheet.write(f'D{i + 1}', AbstractAutoParser.car_mileage[i])
+        worksheet.write(f'E{i + 1}', AbstractAutoParser.car_link[i])
+
+    workbook.close()
 
 
 if __name__ == '__main__':
     mark = input('Выберете марку машины(Написать марку):\n'
-                 '1. Volkswagen\n2. Opel\n3. Audi\n4. BMW\n5. Toyota\n6. Skoda\n'
-                 '7. Peugeot\n8.Renault\n9.Ford\n10.Mercedes-Benz\n')
+                 '1. Volkswagen\n2. Opel\n'
+                 '3. Audi\n4. BMW\n'
+                 '5. Toyota\n6. Skoda\n'
+                 '7. Peugeot\n8.Renault\n'
+                 '9.Ford\n10.Mercedes-Benz\n')
 
-    low_price = float(input('Введите от какой цены(доллары):\n'))
-    high_price = float(input('Введите до какой цены(доллары):\n'))
+    start_price_euro = input('Введите от какой цены(евро(мин 150)):\n')
+    end_price_euro = input('Введите до какой цены(евро):\n')
 
-    low_year = input('Введите от какого года:')
-    high_year = input('Введите до какого года:')
+    start_price_zlot = input('Введите от какой цены(злоты(мин 2000):\n')
+    end_price_zlot = input('Введите до какой цены(злоты):\n')
 
-    low_mileage = input('Введите от какого пробега:')
-    high_mileage = input('Введите до какого пробега:')
+    start_year = input('Введите от какого года:')
+    end_year = input('Введите до какого года:')
 
-    name_car, link_car, cost_car, year_car, mileage_car = oto_motto(
-        name=model_cars_otto[mark],
-        from_price=low_price, to_price=high_price, od_year=low_year,
-        to_year=high_year, od_mileage=low_mileage, to_mileage=high_mileage)
+    start_mileage = input('Введите от какого пробега:')
+    end_mileage = input('Введите до какого пробега:')
 
-    name_car2, link_car2, cost_car2, year_car2, mileage_car2 = mobile(
-        name=model_cars_mobile[mark], from_price=low_price, to_price=high_price,
-        od_year=low_year, to_year=high_year,
-        od_mileage=low_mileage, to_mileage=high_mileage)
+    URL_MOBILE = 'https://suchen.mobile.de/fahrzeuge/search.html' \
+                 '?fr=' + start_year + '%3A' + end_year + \
+                 '&isSearchRequest=true''&ml=' + start_mileage + \
+                 '%3A' + end_mileage + '&ms=' + marks_cars_mobile[mark] + \
+                 '%3B%3B%3B%3B&it=PARTIAL_LEATHER&p=' + \
+                 end_price_euro + '%3A' + start_price_euro + \
+                 '&ref=srp&refId=9304704f-45d6-64c8-fbf1-3dbe9597f523&s=Car' \
+                 '&sb=rel&sfmr=false&vc=Car&ecol=BLACK'
 
-    name_car3, link_car3, cost_car3, year_car3, mileage_car3 = gidas(
-        name=model_cars_otto[mark],
-        from_price=low_price, to_price=high_price, od_year=low_year,
-        to_year=high_year, od_mileage=low_mileage, to_mileage=high_mileage)
+    URL_GIDAS = "https://autogidas.lt/ru/skelbimai/automobiliai/" \
+                "?f_215=" + start_price_euro + "&f_216=" + end_price_euro + \
+                "&f_41=" + start_year + "&f_42=" + end_year + \
+                "&f_65=" + start_mileage + "&f_66=" + end_mileage + \
+                "&f_5=Juoda&a_18=1&s=1372972183&f_1%5B0%5D=" + \
+                marks_cars_otto[mark].title()
 
-    name_car += name_car2 + name_car3
-    link_car += link_car2 + link_car3
-    cost_car += cost_car2 + cost_car3
-    year_car += year_car2 + year_car3
-    mileage_car += mileage_car2 + mileage_car3
+    URL_OTTO = 'https://www.otomoto.pl/osobowe/' + marks_cars_otto[mark] + \
+               '/od-' + start_year + \
+               '?search%5Bfilter_enum_upholstery_type%5D=upholstery-with-leather-inserts' \
+               '&search%5Bfilter_float_year%3Ato%5D=' + end_year + \
+               '&search%5Bfilter_float_mileage%3Afrom%5D=' + start_mileage + \
+               '&search%5Bfilter_float_mileage%3Ato%5D=' + end_mileage + \
+               '&search%5Bfilter_float_price%3Afrom%5D=' + start_price_zlot + \
+               '&search%5Bfilter_float_price%3Ato%5D=' + end_price_zlot + \
+               "&search%5Bfilter_enum_color%5D=black"
 
-    workbook = xlsxwriter.Workbook('hello.xlsx')
-    worksheet = workbook.add_worksheet()
+    mobile = MobileParser(URL_MOBILE)
+    gidas = GidasParser(URL_GIDAS)
+    otto = OttoParser(URL_OTTO, marks_cars_otto[mark])
 
-    for i in range(0, len(name_car)):
-        worksheet.write(f'A{i + 1}', name_car[i])
-        worksheet.write(f'B{i + 1}', cost_car[i])
-        worksheet.write(f'C{i + 1}', year_car[i])
-        worksheet.write(f'D{i + 1}', mileage_car[i])
-        worksheet.write(f'E{i + 1}', link_car[i])
+    mobile.parser()
+    mobile.save_car_date()
 
-    workbook.close()
+    gidas.parser()
+    gidas.save_car_date()
+
+    otto.parser()
+    otto.save_car_date()
+
+    save_date()

@@ -1,6 +1,4 @@
-a = [1, 2, 3]
-b = a
-
-a[0] = 5
-
-print(b)
+for i in range(0, 10):
+    if i == 5:
+        continue
+    print(i)
