@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django.http import Http404, HttpResponseRedirect, HttpResponse
+from rest_framework.viewsets import ModelViewSet
 from .models import Article
 from django.urls import reverse
-from django.contrib.auth.models import User
+from .serializers import ArticleSerializer
 
 
 def index(request):
@@ -56,5 +57,6 @@ def favorite(request):
         return HttpResponse(status=204)
 
 
-
-
+class ArticlesView(ModelViewSet):
+    queryset = Article.objects.all()
+    serializer_class = ArticleSerializer
