@@ -45,6 +45,7 @@ def sort_by_alphabet(request):
 
 def favorite(request):
     user = request.user
+    print(request.method)
 
     if request.method == 'GET':
         favorite_article = user.article_set.all()

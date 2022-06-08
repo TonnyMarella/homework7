@@ -1,11 +1,17 @@
 {% extends 'article/base.html' %}
 
+{% load static %}
+
+{% block css_additional %}
+<link rel="stylesheet" href="{% static 'article/css/one.css'%}">
+{% endblock %}
+
 {% block title %}
 {{ article.title }}
 {% endblock %}
 
 {% block content %}
-<div class="p-4 p-md-5 mb-4 text-white rounded bg-dark">
+<div class="p-4 text-white rounded bg-dark">
     <div class="col-md-15 px-0">
       <h1 align="center" class="display-4 fst-italic">{{ article.title }}</h1>
       <p class="lead my-11">{{ article.text }}</p>

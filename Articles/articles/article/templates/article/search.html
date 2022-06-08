@@ -9,6 +9,7 @@
     <div class="col-md-15 px-0">
         {% for i in search_list %}
       <h1 align="center" class="display-4 fst-italic">{{ i.title }}</h1>
+        <h2>Автор: {{ i.author_article.name }}</h2>
       <p style="height: 60px; overflow: hidden;" class="lead my-3">{{ i.text }}</p>
         <p class="lead mb-0"><a href="{% url 'article:detail' i.id %}" class="text-white fw-bold">Продолижить читать...</a></p>
         {% endfor %}

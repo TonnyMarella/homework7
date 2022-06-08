@@ -1,0 +1,9 @@
+p {
+    word-wrap: break-word;
+}
+
+div {
+    padding: 1em 1%;
+    margin: 0;
+    padding: 0;
+}
