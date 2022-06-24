@@ -1,14 +1,20 @@
 from django.shortcuts import render
 from django.http import Http404, HttpResponseRedirect, HttpResponse
+from django.views.generic.list import ListView
 from rest_framework.viewsets import ModelViewSet
 from .models import Article
 from django.urls import reverse
 from .serializers import ArticleSerializer
 
 
-def index(request):
-    article = Article.objects.order_by('-create')
-    return render(request, 'article/main.html', {'article': article})
+class ArticleListView(ListView):
+    model = Article
+    template_name = 'article/main.html'
+    context_object_name = 'article'
+    paginate_by = 5
+
+    def get_queryset(self):
+        return Article.objects.order_by('-create')
 
 
 def detail(request, article_id):

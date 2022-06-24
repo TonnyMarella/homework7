@@ -1,3 +1,4 @@
+from django.db.models import Sum
 from django.http import HttpResponse
 
 from .forms import ReviewForm
@@ -50,9 +51,7 @@ def basket(request):
 
     if request.method == 'GET':
         user_basket = user.product_set.all()
-        total_price = 0
-        for i in user_basket:
-            total_price += i.price
+        total_price = user.product_set.aggregate(Sum('price'))['price__sum']
 
         return render(request, 'main/basket.html', {'user_basket': user_basket, 'total_price': total_price})
 
