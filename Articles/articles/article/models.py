@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.urls import reverse
 
 
 class AuthorArticle(models.Model):
@@ -16,16 +17,19 @@ class Article(models.Model):
     class Meta():
         verbose_name = 'Статья'
         verbose_name_plural = 'Статьи'
-        ordering = ['create']
+        ordering = ['-create']
 
     title = models.CharField('Название', max_length=50)
     text = models.TextField('Содержимое', )
     create = models.DateTimeField('Создано', auto_now_add=True)
-    author_article = models.ForeignKey(AuthorArticle, on_delete=models.CASCADE, default=1)
+    author_article = models.ForeignKey(AuthorArticle, on_delete=models.CASCADE, default=1, verbose_name='Автор статьи')
     favorite = models.ManyToManyField(User, blank=True)
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return f"{self.pk}"
 
 
 class Comment(models.Model):

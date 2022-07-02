@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django.http import Http404, HttpResponseRedirect, HttpResponse
+from django.views.generic import DetailView
 from django.views.generic.list import ListView
 from rest_framework.viewsets import ModelViewSet
-from .models import Article
+from .models import Article, Comment
 from django.urls import reverse
 from .serializers import ArticleSerializer
 
@@ -13,19 +14,18 @@ class ArticleListView(ListView):
     context_object_name = 'article'
     paginate_by = 5
 
-    def get_queryset(self):
-        return Article.objects.order_by('-create')
 
+class ArticleDetailView(DetailView):
+    model = Article
+    template_name = 'article/one.html'
+    context_object_name = 'article'
 
-def detail(request, article_id):
-    try:
-        a = Article.objects.get(id=article_id)
-    except:
-        raise Http404('Статья не найдена...')
-
-    latest_comments_list = a.comment_set.order_by('-id')[:10]
-
-    return render(request, 'article/one.html', {'article': a, 'latest_comments_list': latest_comments_list})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = context['article']
+        comments = Article.objects.get(title=context['article']).comment_set.all()
+        context['latest_comments_list'] = comments
+        return context
 
 
 def leave_comment(request, article_id):
