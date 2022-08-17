@@ -3,7 +3,7 @@ from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.views.generic import DetailView
 from django.views.generic.list import ListView
 from rest_framework.viewsets import ModelViewSet
-from .models import Article, Comment
+from .models import Article
 from django.urls import reverse
 from .serializers import ArticleSerializer
 

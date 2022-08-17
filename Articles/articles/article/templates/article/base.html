@@ -39,7 +39,7 @@
 
 {% block pagination %}
     {% if is_paginated %}
-      <div class="pagination">
+      <div class="pagination text-white bg-dark">
           <span class="page-links">
               {% if page_obj.has_previous %}
                   <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">previous</a>

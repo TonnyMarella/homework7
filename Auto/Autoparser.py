@@ -79,7 +79,6 @@ class GidasParser(AbstractAutoParser):
     def parser(self):
         r = requests.get(self.url, headers=self.headers)
         html = BS(r.content, 'html.parser')
-        print(self.url)
         if html.find_all('div', class_="pagination"):
             self.pages = int(html.find_all(
                 'div', class_='paginator')[0].text[-5:].replace(' ', ''))

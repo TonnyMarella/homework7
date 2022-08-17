@@ -13,11 +13,11 @@
 {% block content %}
 <div class="p-4 text-white rounded bg-dark">
     <div class="col-md-15 px-0">
-      <h1 align="center" class="display-4 fst-italic">{{ article.title }}</h1>
+      <article align="center" class="display-4 fst-italic">{{ article.title }}</article>
       <p class="lead my-11">{{ article.text }}</p>
-
-        <h1 align="center" class="Commets">Комментарии</h1>
         <hr>
+        <h1 align="center" class="Commets">Комментарии</h1>
+        <section>
         {% if latest_comments_list %}
             {% for com in latest_comments_list %}
                     <strong>{{com.author_name}}</strong>
@@ -26,6 +26,7 @@
         {% else %}
         Комментарии не найдены
         {% endif %}
+        </section>
         <hr>
         <form action="{% url 'article:leave_comment' article.id %}" method="POST">
         {% csrf_token %}
