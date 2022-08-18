@@ -1,11 +1,15 @@
 import os
 import shutil
+import re
+from pathlib import Path
+import sys
+from const import translate
 from const import image, video, document, music, archives, folders_for_sort  # import our constants to avoid big code
 
 
 # function for sorting folders
-def sorting(name_folder, first_path):
-    os.chdir(name_folder)
+def sorting(folder_name: str, first_path: str):
+    os.chdir(folder_name)
     file_unknown = []
     folders = []
     test = {
@@ -15,15 +19,19 @@ def sorting(name_folder, first_path):
         music: 'music',
     }
 
-    # Viewing all files in a folder
-    for i in os.listdir(name_folder):
+    for i in os.listdir(folder_name):
+        """
+        Viewing all files in a folder
+        """
         if os.path.isfile(i):
-            file = normalize(name_folder=name_folder, file_name=i)
+            file = normalize(folder_name=folder_name, file_name=i)
             format_file = file.split('.')[1].upper()
             count = 0
-
-            if format_file in archives:
-                shutil.unpack_archive(os.path.join(os.getcwd(), i), os.path.join(first_path, 'archives', i[:-3]))
+            try:
+                if format_file in archives:
+                    shutil.unpack_archive(os.path.join(os.getcwd(), i), os.path.join(first_path, 'archives', i[:-3]))
+            except shutil.ReadError as error:
+                print(error)
             else:
                 for keys, values in test.items():
                     if format_file in keys:
@@ -34,19 +42,24 @@ def sorting(name_folder, first_path):
                     file_unknown.append(i)
         elif os.path.isdir(i):
             if i not in folders_for_sort:
-                folders.append(normalize(name_folder=name_folder, file_name=i))
+                folders.append(normalize(folder_name=folder_name, file_name=i))
 
-    print(f'File unknowns: {file_unknown} in path: {name_folder}')
+    print(f'File unknowns: {file_unknown} in path: {folder_name}')
+    recursion_subfolders(folders=folders, folder_name=folder_name, first_path=first_path)
 
-    # Recursion for subfolders
+
+def recursion_subfolders(folders: list, folder_name: str, first_path: str):
+    """
+    Recursion for subfolders
+    :param folders:
+    :param folder_name:
+    :param first_path:
+    """
     for i in folders:
-        sorting(name_folder=os.path.join(name_folder, i), first_path=first_path)
+        sorting(folder_name=os.path.join(folder_name, i), first_path=first_path)
 
 
-def normalize(name_folder, file_name):
-    import re
-    from const import translate
-
+def normalize(folder_name: str, file_name: str) -> str:
     new_file_name = re.sub(r'[^.\w]', '_', file_name)
     result = ''
 
@@ -55,24 +68,30 @@ def normalize(name_folder, file_name):
             i = translate[i]
         result += i
 
-    os.renames(os.path.join(name_folder, file_name), os.path.join(name_folder, result))
+    os.renames(os.path.join(folder_name, file_name), os.path.join(folder_name, result))
     return result
 
 
-def del_empty_dirs(path):
-    for d in os.listdir(path):
-        if d not in folders_for_sort:
-            a = os.path.join(path, d)
-            if os.path.isdir(a):
-                del_empty_dirs(a)
-                if not os.listdir(a):
-                    os.rmdir(a)
+def del_empty_dirs(path: str) -> bool:
+    if os.path.exists(path) and Path(path).is_dir():
+        for d in os.listdir(path):
+            if d not in folders_for_sort:
+                a = os.path.join(path, d)
+                if os.path.isdir(a):
+                    del_empty_dirs(a)
+                    if not os.listdir(a):
+                        os.rmdir(a)
+        return True
+    else:
+        return False
 
 
 if __name__ == '__main__':
-    name_folder = input('Enter the path to the file\n')
-    first_path = name_folder  # Keeping the original path
-    del_empty_dirs(first_path)  # To optimize, first delete all empty folders
-    sorting(name_folder, first_path)  # Sorting folders
-    os.chdir(name_folder)  # Returning to the original folder
-    del_empty_dirs(first_path)  # Delete new empty folders
+    folder_name = sys.argv[1]
+    first_path = folder_name  # Keeping the original path
+    if del_empty_dirs(first_path):  # To optimize, first delete all empty folders
+        sorting(folder_name, first_path)  # Sorting folders
+        os.chdir(folder_name)  # Returning to the original folder
+        del_empty_dirs(first_path)  # Delete new empty folders
+    else:
+        raise Exception('Enter the correct path')
