@@ -5,5 +5,7 @@
     <mapping directory="$PROJECT_DIR$/Django/First(clone)/myfirst" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/Django/Virtual/myfirst" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/Git курсы" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/clean_folder" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/clean_folder/clean_folder" vcs="Git" />
   </component>
 </project>
